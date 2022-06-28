@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>More Declarative Code</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="libs/reveal.js/4.3.1/reset.css" />
+    <link rel="stylesheet" href="libs/reveal.js/4.3.1/reveal.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+    />
+
+    <!-- highlight Theme -->
+
+    <link
+      rel="stylesheet"
+      href="libs/highlight.js/11.3.1/styles/monokai.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="libs/reveal.js/4.3.1/plugin/chalkboard/style.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="libs/reveal.js/4.3.1/plugin/customcontrols/style.css"
+    />
+
+    <!-- Revealjs Theme -->
+
+    <link
+      rel="stylesheet"
+      href="libs/reveal.js/4.3.1/theme/night.css"
+      id="theme"
+    />
+
+    <link rel="stylesheet" href="libs/styles/tasklist.css" />
+    <link rel="stylesheet" href="libs/styles/iota.css" />
+    <link rel="stylesheet" href="libs/styles/layout.css" />
+
+    <!-- Revealjs Theme -->
+
+    <!-- css list -->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <style type="text/css">
+            .reveal {
+            }
+          </style>
+          <h3>More Declarative Code</h3>
+          <div style="color: #64ff93"><strong>Hossein Salehi</strong></div>
+        </section>
+
+        <section>
+          <h3>Imperative VS Declarative</h3>
+          <pre><code class="language-markdown{.fragment}">
+  - Imperative
+    - The focus is on how to get the result, the &quot;how&quot;
+
+  - Declarative
+    - The focus is on the end result, the &quot;what&quot;
+    - It relies on the underlying imperative components
+    - It looks like pseudo-code 
+
+</code></pre>
+          <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+const double = (x) => x * 2
+const array = Array(10).fill(2)
+
+// imperative
+const mapped = []
+for (let i = 0; i < array.length; i++) {
+  mapped.push(double(array[i]))
+}
+
+// declarative
+const result = array.map(double)
+
+</code>
+</pre>
+        </section>
+
+        <section>
+          <section>
+            <h3>Functional Programming</h3>
+            <p>A very brief introduction</p>
+          </section>
+
+          <section>
+            <h4>Specifications</h4>
+            <ul style="font-size: 1.7rem">
+              <li>Composing <em>Pure</em> Functions</li>
+              <li style="color: grey">
+                Utilizing <em>Algebraic Data Structures</em> and
+                <em>Algebraic Data Types</em>
+              </li>
+              <li>A subset of Declarative Programming</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4>Purely Functional Languages</h4>
+            <pre><code>
+  1. Haskell
+  2. Closure
+  3. Erlang
+  4. SQL (?)
+  5. ...
+
+</code></pre>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="sql">
+-- the focus is on "what" not "how"
+ALTER TABLE languages
+    ALTER COLUMN updated_at SET DATA TYPE timestamp,
+    ALTER COLUMN created_at SET DATA TYPE timestamp;
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>How about Javascript?</h4>
+            <p>
+              <small class="fragment">You can write Functional Code.</small>
+              <small class="fragment"
+                >One of the reasons is that functions are
+                <span style="color: #33f0ff"
+                  >first-class constructs</span
+                ></small
+              >
+            </p>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+// can be assigned to variables
+const nuke = (thing) => console.log(`${thing} nuked`)
+
+// can be passed as arguments to functions
+const annihilate = (nuke, thing) => {
+  console.log(`${thing} disabled`)
+  nuke(thing)
+}
+
+// can be returned from other functions (higher-order functions)
+const getThingDestroyer = (thing) => () => console.log(`${thing} destroyed`)
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Pure Functions</h4>
+            <pre><code class="fragment language-markdown">
+  1. for the same input, the output will always be the same
+  2. no side effects (observable interaction with outside)
+
+</code></pre>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+// impure
+const nuke = (thing) => console.log(`${thing} nuked`)
+
+// impure
+const annihilate = (nuke, thing) => {
+  console.log(`${thing} disabled`)
+  nuke(thing)
+}
+
+// pure
+const getThingDestroyer = (thing) => () => console.log(`${thing} destroyed`)
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Why Pure Functions</h4>
+            <p>
+              <small class="fragment"
+                >Side Effects are the most common source of bugs</small
+              >
+            </p>
+            <pre><code class="fragment language-markdown">
+  → Mutation 😈, of inputs, or any external state (splice/slice)
+  → I/O e.g. network requests, file system access, etc.
+
+</code></pre>
+            <p><small class="fragment"></small></p>
+            <p>
+              <small class="fragment"
+                >Being side effect free, pure functions are</small
+              >
+            </p>
+            <pre><code class="fragment language-markdown">
+  - Portable: Self-contained, Modular
+  - Testable
+  - Memoizable: Cacheable
+  - Reasonable: Referential Transparency
+  - ...
+
+</code></pre>
+          </section>
+
+          <section>
+            <h4>Composition</h4>
+            <p>
+              <small class="fragment"
+                >Piecing small, simple functions to do more complex
+                things</small
+              >
+            </p>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+const greet = (name) => `Hello, ${name}!`
+
+const toUpper = (str) => str.toUpperCase()
+
+const greetLoudly = (name) => toUpper(greet(name))
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Partial Application</h4>
+            <p><small>Using Higher Order Functions and Closure</small></p>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+const add = (a, b) => a + b
+add(4,5) // 9
+
+</code>
+</pre>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+// A higher order function that returns a function 
+// which "remembers" the first argument through the closure
+const add = a => b => a + b
+add(4)(5) // 9
+
+</code>
+</pre>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+const increment = add(1);   // it is a function that remembers a=1 via the closure
+const addFour = add(4);     
+
+increment(5) // 6
+addFour(5) // 9
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Currying</h4>
+            <pre><code class="fragment language-markdown">
+  f(a,b,c) === f(a)(b)(c) === f(a)(b,c) === f(a,b)(c)
+
+</code></pre>
+            <pre class="fragment">
+<code style="font-size: 1rem" class="typescript">
+  const add = curry((a, b) => a + b) // instead of: const add = a => b => a + b
+  const addTen = add(10)
+
+  addTen(5) // 15
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Hindley-Milner type signature</h4>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+// add :: Number → Number → Number
+// const add = a => b => a + b;
+const add = curry((a, b) => a + b)
+
+// map :: Functor f => (a → b) → f a → f b
+// const map = transform => data => data.map(transform)
+const map = curry((transform, data) => data.map(transform));
+
+</code>
+</pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Ramda</h3>
+            <p>A practical functional library for JavaScript</p>
+          </section>
+
+          <section>
+            <h4>Two Simple Principles</h4>
+            <pre><code class="fragment language-markdown">
+  - Put the data last
+  - Curry all the things (if they are not already)
+
+</code></pre>
+          </section>
+
+          <section>
+            <h4>Example I</h4>
+            <pre class="fragment">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+/*
+* We have a member record and we want to build their formatted address
+*/
+const mapleHouseMember = {
+  id: "123",
+  name: "Maple Lover",
+  address: {
+    street: "123 Main St",
+    city: "Maple City",
+    state: "MA",
+    postcode: "3039",
+    country: "Australia",
+  },
+};
+
+const formattedAddress = R.compose(
+  R.join(", "),
+  R.values,
+  R.prop("address")
+);
+
+// 123 Main St, Maple City, MA, 3039, Australia
+
+
+const formattedAddress2 = R.compose(
+  R.join(", "),
+  R.props(["street", "city", "state", "postcode", "country"]),
+  R.prop<"address", MapleHouseMember>("address")
+);
+
+// 123 Main St, Maple City, MA, 3039, Australia
+
+</code>
+</pre>
+          </section>
+
+          <section>
+            <h4>Example II</h4>
+            <pre class="fragment-">
+<code data-line-numbers style="font-size: 1rem" class="typescript">
+/*
+* State reducer
+*/
+
+// -------------------------------------------- //
+// data
+// -------------------------------------------- //
+const event = {
+  key: "Enter",
+  timestamp: 123456789,
+};
+
+const state = {
+  noOfConsecutiveInvalidKeys: 0,
+  canLaunch: false,
+};
+
+const payload = { event, state };
+
+
+
+// -------------------------------------------- //
+// key evaluation utils
+// -------------------------------------------- //
+const isCharacter = (key) => key?.length === 1;
+const isBackSpace = (key) => key === "Backspace";
+const isEscape = (key) => key === "Escape";
+const isEnter = (key) => key === "Enter";
+
+
+
+
+
+
+// -------------------------------------------- //
+// predicates
+// -------------------------------------------- //
+const viewKey = R.path("event.key");
+
+const isKeyInValid = R.complement(
+  R.compose(
+    R.anyPass([isCharacter, isBackSpace, isEscape, isEnter]), 
+    viewKey
+  )
+);
+
+const isKeyCharacter = R.compose(isCharacter, viewKey);
+
+const isKeyEnter = R.compose(isEnter, viewKey);
+
+
+// -------------------------------------------- //
+// reducers
+// -------------------------------------------- //
+const incrementInvalidKeysCounter = R.evolve({
+  state: { noOfConsecutiveInvalidKeys: R.inc },
+});
+
+const resetInvalidKeysCounter = R.evolve({
+  state: { noOfConsecutiveInvalidKeys: R.always(0) },
+})
+
+const clearRunway = R.evolve({
+    state: { canLaunch: R.always(true) },
+});
+
+
+// -------------------------------------------- //
+// root reducer
+// -------------------------------------------- //
+const reduce = R.cond([
+  [isKeyInValid, incrementInvalidKeysCounter],
+  [isKeyCharacter, resetInvalidKeysCounter],
+  [isKeyEnter, clearRunway],
+  [R.T, R.identity],
+]);
+
+
+// -------------------------------------------- //
+// conduct
+// -------------------------------------------- //
+const input = { event, state };
+const result = reduce(input);
+
+/*
+input:  {
+  event: { key: 'Enter', timestamp: 123456789 },
+  state: { noOfConsecutiveInvalidKeys: 0, canLaunch: false }
+}
+result:  {
+  event: { key: 'Enter', timestamp: 123456789 },
+  state: { noOfConsecutiveInvalidKeys: 0, canLaunch: true }
+}
+*/
+
+</code>
+</pre>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="libs/reveal.js/4.1.3/reveal.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/zoom/zoom.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/notes/notes.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/search/search.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/markdown/markdown.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/highlight/highlight.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/menu/menu.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/math/math.js"></script>
+
+    <script src="libs/reveal.js/4.1.3/plugin/fullscreen/plugin.js"></script>
+
+    <script src="libs/reveal.js/4.1.3/plugin/animate/plugin.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/animate/svg.min.js"></script>
+
+    <script src="libs/reveal.js/4.1.3/plugin/anything/plugin.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/Chart.min.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/d3/d3.v3.min.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/d3.patch.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/d3/queue.v1.min.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/d3/topojson.v1.min.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/anything/function-plot.js"></script>
+
+    <!--	<script src="libs/reveal.js/4.1.3/plugin/audio-slideshow/plugin.js"></script>  -->
+    <!--	<script src="libs/reveal.js/4.1.3/plugin/audio-slideshow/recorder.js"></script>-->
+    <!--	<script src="libs/reveal.js/4.1.3/plugin/audio-slideshow/RecordRTC.js"></script>-->
+
+    <script src="libs/reveal.js/4.1.3/plugin/chalkboard/plugin.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/customcontrols/plugin.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/embed-tweet/plugin.js"></script>
+
+    <script src="libs/reveal.js/4.1.3/plugin/chart/chart.min.js"></script>
+    <script src="libs/reveal.js/4.1.3/plugin/chart/plugin.js"></script>
+
+    <script src="libs/reveal.js/4.1.3/plugin/verticator/verticator.js"></script>
+    <script>
+      const printPlugins = [
+        RevealNotes,
+        RevealHighlight,
+        RevealMath,
+        RevealAnimate,
+        RevealChalkboard,
+        RevealEmbedTweet,
+        RevealChart,
+      ];
+
+      const plugins = [
+        ...printPlugins,
+        RevealZoom,
+        RevealSearch,
+        RevealMarkdown,
+        RevealMenu,
+        RevealFullscreen,
+        RevealAnything,
+        //RevealAudioSlideshow,
+        //RevealAudioRecorder,
+        RevealCustomControls,
+        // poll
+        // question
+        // seminar
+        Verticator,
+      ];
+
+      // Also available as an ES module, see:
+      // https://revealjs.com/initialization/
+      Reveal.initialize({
+        controls: true,
+        controlsTutorial: true,
+        controlsLayout: "bottom-right",
+        controlsBackArrows: "faded",
+        progress: true,
+        slideNumber: false,
+        //#showSlideNumber "all" "print" "speaker"
+        hash: true, //#  hash: false,
+        //# respondToHashChanges: true,
+        //# history: false,
+        keyboard: true,
+        //#keyboardCondition: null,
+        overview: true,
+        center: true,
+        touch: true,
+        loop: false,
+        rtl: false,
+        //#navigationMode: 'default', linear grid
+        shuffle: false,
+        fragments: true,
+        fragmentInURL: false,
+        embedded: false,
+        help: true,
+        //#pause: true
+        showNotes: false,
+        autoPlayMedia: false, // TODO fix this to a nullable value
+        //#preloadIframes: null. true false
+        //#autoAnimate: true
+        //#autoAnimateMatcher: null,
+        //#autoAnimateEasing: 'ease',
+        //autoAnimateDuration: 1.0,
+        //#autoAnimateUnmatched: true
+        //#autoAnimateStyles: []
+        autoSlide: 0, // TODO fix this to a falseable value
+        autoSlideStoppable: true,
+        autoSlideMethod: "0",
+        defaultTiming: 120,
+        mouseWheel: false,
+        //#previewLinks: false
+        //#postMessage: true,  // TODO : this can cause issues with the vscode api ???
+        //#postMessageEvents: false,
+        //#focusBodyOnPageVisibilityChange: true,
+        transition: "slide",
+        transitionSpeed: "default",
+        backgroundTransition: "fade",
+        //#pdfMaxPagesPerSlide: Number.POSITIVE_INFINITY,
+        //#pdfSeparateFragments: true,
+        //#pdfPageHeightOffset: -1,
+        viewDistance: 3,
+        //#mobileViewDistance: 2,
+        display: "block",
+        //#hideInactiveCursor: true,
+        //#hideCursorTime: 5000
+
+        // Parallax Background
+        parallaxBackgroundImage: "",
+        parallaxBackgroundSize: "",
+        parallaxBackgroundHorizontal: 0,
+        parallaxBackgroundVertical: 0,
+
+        //Presentation Size
+        width: 960,
+        height: 700,
+        margin: 0.25,
+        minScale: 0.2,
+        maxScale: 2,
+        disableLayout: false,
+
+        audio: {
+          prefix: "audio/", // audio files are stored in the "audio" folder
+          suffix: ".ogg", // audio files have the ".ogg" ending
+          textToSpeechURL: null, // the URL to the text to speech converter
+          defaultNotes: false, // use slide notes as default for the text to speech converter
+          defaultText: false, // use slide text as default for the text to speech converter
+          advance: 0, // advance to next slide after given time in milliseconds after audio has played, use negative value to not advance
+          autoplay: false, // automatically start slideshow
+          defaultDuration: 5, // default duration in seconds if no audio is available
+          defaultAudios: true, // try to play audios with names such as audio/1.2.ogg
+          playerOpacity: 0.05, // opacity value of audio player if unfocused
+          playerStyle:
+            "position: fixed; bottom: 4px; left: 25%; width: 50%; height:75px; z-index: 33;", // style used for container of audio controls
+          startAtFragment: false, // when moving to a slide, start at the current fragment or at the start of the slide
+        },
+
+        chalkboard: {
+          // font-awesome.min.css must be available
+          //src: "chalkboard/chalkboard.json",
+          storage: "chalkboard-demo",
+        },
+
+        customcontrols: {
+          controls: [
+            {
+              id: "toggle-overview",
+              title: "Toggle overview (O)",
+              icon: '<i class="fa fa-th"></i>',
+              action: "Reveal.toggleOverview();",
+            },
+            {
+              icon: '<i class="fa fa-pen-square"></i>',
+              title: "Toggle chalkboard (B)",
+              action: "RevealChalkboard.toggleChalkboard();",
+            },
+            {
+              icon: '<i class="fa fa-pen"></i>',
+              title: "Toggle notes canvas (C)",
+              action: "RevealChalkboard.toggleNotesCanvas();",
+            },
+          ],
+        },
+        chart: {
+          defaults: {
+            color: "lightgray", // color of labels
+            scale: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              grid: { color: "lightgray" }, // color of grid lines
+            },
+          },
+          line: {
+            borderColor: [
+              "rgba(20,220,220,.8)",
+              "rgba(220,120,120,.8)",
+              "rgba(20,120,220,.8)",
+            ],
+            borderDash: [
+              [5, 10],
+              [0, 0],
+            ],
+          },
+          bar: {
+            backgroundColor: [
+              "rgba(20,220,220,.8)",
+              "rgba(220,120,120,.8)",
+              "rgba(20,120,220,.8)",
+            ],
+          },
+          pie: {
+            backgroundColor: [
+              [
+                "rgba(0,0,0,.8)",
+                "rgba(220,20,20,.8)",
+                "rgba(20,220,20,.8)",
+                "rgba(220,220,20,.8)",
+                "rgba(20,20,220,.8)",
+              ],
+            ],
+          },
+          radar: {
+            borderColor: [
+              "rgba(20,220,220,.8)",
+              "rgba(220,120,120,.8)",
+              "rgba(20,120,220,.8)",
+            ],
+          },
+        },
+        math: {
+          mathjax:
+            "https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js",
+          config: "TeX-AMS_HTML-full",
+          // pass other options into `MathJax.Hub.Config()`
+          TeX: { Macros: { RR: "{\\bf R}" } },
+        },
+        anything: [
+          {
+            className: "plot",
+            defaults: { width: 500, height: 500, grid: true },
+            initialize: function (container, options) {
+              options.target = "#" + container.id;
+              functionPlot(options);
+            },
+          },
+          {
+            className: "chart",
+            initialize: function (container, options) {
+              container.chart = new Chart(container.getContext("2d"), options);
+            },
+          },
+          {
+            className: "anything",
+            initialize: function (container, options) {
+              if (options && options.initialize) {
+                options.initialize(container);
+              }
+            },
+          },
+        ],
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: window.location.search.match(/print-pdf/gi)
+          ? printPlugins
+          : plugins,
+      });
+
+      // Change chalkboard theme :
+      function changeTheme(input) {
+        var config = {};
+        config.theme = input.value;
+        Reveal.getPlugin("RevealChalkboard").configure(config);
+        input.blur();
+      }
+
+      // // Handle the message inside the webview
+      // window.addEventListener('message', event => {
+
+      //     const message = event.data; // The JSON data our extension sent
+
+      //     switch (message.command) {
+      //         case 'refactor':
+      //             Reveal.toggleHelp();
+      //     }
+      // });
+
+      if (window.location.search.match(/print-pdf-now/gi)) {
+        setTimeout(() => {
+          window.print();
+        }, 2500);
+      }
+    </script>
+  </body>
+</html>
